@@ -3,9 +3,9 @@ package controllers
 import dao.UserDao
 import models.Login
 import play.api.data.Form
-import play.api.data.Forms.mapping
-import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms._
 import play.api.mvc.Action
+import models.Signup
 
 /**
  * Authentication controller. Manages:
@@ -39,15 +39,46 @@ object Auth extends SecuredController {
 				})
 		}
 	
-	def signUp = Action { implicit request =>
-		Ok
-	}
-	def signUpPost = Action { implicit request =>
-		Ok
-	}
 	def logout = withUser(user => Action {
 		Redirect(routes.Application.index).withNewSession.
 			flashing("success" -> "You've been logged out")
 	})
 
+	
+	
+	val signupForm = Form(
+		mapping(
+			"name" -> nonEmptyText,
+			"password" -> text,
+			"passwordConfirmation" -> text)(Signup.apply)(Signup.unapply)
+			verifying ("Password can not be empty", result => result match {
+				case Signup(_, p1, _) =>
+					p1 != ""
+			})
+			verifying ("Passwords do not match", result => result match {
+				case signup =>
+					signup.isPasswordMatch
+			})
+			verifying ("User name has already been used", result => result match {
+				case Signup(name, _, _) =>
+						UserDao.isUsernameAvailable(name)
+			})
+		)
+	def signUp = Action { implicit request =>
+		Ok(views.html.signup(signupForm))
+	}
+	def signUpPost = Action { implicit request =>
+		signupForm.bindFromRequest.fold(
+			formWithErrors => 
+				BadRequest(views.html.signup(formWithErrors)),
+			signup => {
+				val user = UserDao.create(signup.toLogin)
+				val redirect =
+					request.flash.get("redirect").
+						map(Redirect(_)).
+						getOrElse(Redirect(routes.Application.index))
+				redirect.withSession("userId" -> user.id.toString)
+			})
+	}
+	
 }
