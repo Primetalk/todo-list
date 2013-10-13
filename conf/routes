@@ -18,5 +18,7 @@ GET		/logout						controllers.Auth.logout
 GET		/tasks						controllers.Task.list
 POST	/tasks						controllers.Task.add
 DELETE	/tasks/:id					controllers.Task.delete(id:Long)
+POST	/tasks/update				controllers.Task.update
+
 
 GET		/*path						controllers.Application.notFound(path)

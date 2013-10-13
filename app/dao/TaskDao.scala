@@ -55,13 +55,27 @@ class TaskDao(userId: Long) {
 	def update(modifiedTask: Task) {
 		DB.withConnection { implicit c ⇒
 			val status: Int = modifiedTask.status
-			SQL("UPDATE tasks SET status={status}, text={text}, priority={priority} WHERE id = {id}").on(
+			SQL("UPDATE tasks SET status={status}, text={text}, priority={priority} WHERE id = {id} AND user_id={userId}").on(
 				'id -> modifiedTask.id,
 				'text -> modifiedTask.text,
 				'priority -> modifiedTask.priority.level,
-				'status -> status).
+				'status -> status,
+				'userId -> userId).
 				executeUpdate()
 		}
+	}
+	
+	def updateField(f:FieldUpdate) {
+		DB.withConnection { implicit c ⇒
+			// todo check values!
+			SQL(s"UPDATE tasks SET ${f.name}={value} WHERE id = {id} AND user_id={userId}").on(
+				'id -> f.pk,
+//				'name -> f.name,
+				'value -> f.value,
+				'userId -> userId).
+				executeUpdate()
+		}
+		
 	}
 
 }

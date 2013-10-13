@@ -13,7 +13,15 @@
 		<tbody>
 	@tasks.map { task => <tr>
 		<td>@task.priority.level</td>
-		<td>@task.text</td>
+		<td><div class="jeditable"
+						data-pk="@task.id" 
+						data-type="text" 
+						data-name="text"
+						data-inputclass="form-control task-text-input"
+						>
+							@if(task.status == Completed) { <strike>@task.text</strike } else {@task.text} 
+					</div>
+			</td>
 		<td>
 			<button type="submit" class="btn btn-mini" onClick="deleteTask(@task.id)">
 				<span class="glyphicon glyphicon-trash"></span>

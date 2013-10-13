@@ -8,6 +8,7 @@ import play.api.data.Forms._
 import models.Priority
 import models.User
 import play.api.mvc.RequestHeader
+import models.FieldUpdate
 
 object Task extends SecuredController {
 	val taskForm = Form(
@@ -55,6 +56,27 @@ object Task extends SecuredController {
 		Action { implicit request ⇒
 			println("delete:"+id)
 			UserDao.tasks(user).delete(id)
+			tasksOk(user)
+		}
+	)
+	
+	
+	// TODO validation
+	val fieldUpdate = Form(
+			mapping(
+				"pk" -> number,
+				"name" -> text,
+				"value" -> text
+			)(FieldUpdate.apply)(FieldUpdate.unapply)
+			)
+	
+	def update = withUser(user =>
+		Action { implicit request ⇒
+			val form = fieldUpdate.bindFromRequest
+			form.fold(
+					formWithErrors => BadRequest("Invalid field value"), 
+					fu =>
+						UserDao.tasks(user).updateField(fu))			
 			tasksOk(user)
 		}
 	)
