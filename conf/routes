@@ -14,4 +14,7 @@ GET		/signup						controllers.Auth.signUp
 POST	/signup						controllers.Auth.signUpPost
 GET		/logout						controllers.Auth.logout
 
+GET		/tasks						controllers.Task.list
+POST	/tasks						controllers.Task.add
+
 GET		/*path						controllers.Application.notFound(path)

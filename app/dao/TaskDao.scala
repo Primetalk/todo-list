@@ -34,8 +34,8 @@ class TaskDao(userId: Long) {
 			SQL("INSERT INTO tasks (id, status, priority, text, user_id) "+
 					"VALUES ({taskId},{status}, {priority}, {text}, {userId})").on(
 				'taskId -> id,
-				'text -> text,
-				'status -> 0,
+				'text -> taskTemplate.text,
+				'status -> (taskTemplate.status:Int),
 				'priority -> taskTemplate.priority.level,
 				'userId -> userId).
 				executeUpdate()

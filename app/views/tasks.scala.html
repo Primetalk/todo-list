@@ -1,0 +1,38 @@
+@(tasks: List[Task], newTaskForm:Form[Task], user:User)(implicit flash:Flash)
+
+@main(""+tasks.size + " task(s) of user "+user.name) {
+	
+	@tasks.map { task => 
+		<p>@task.text</p>
+		
+		}
+@* The form for adding tasks: *@	
+	@helper.form(routes.Task.add) {
+	    
+		@newTaskForm.globalError.map { error =>
+		    <p class="error">
+		        @error.message
+		    </p>
+		}
+		
+		@flash.get("success").map { message =>
+		    <p class="success">
+		        @message
+		    </p>
+		}
+		
+		<p>
+			<input type="hidden" name="id" id="newTaskId" value="0">
+			<input type="hidden" name="status" id="newTaskStatus" value="0">
+			<input type="hidden" name="priority" id="newTaskPriority" value="0">
+		    <input type="text" name="text" 
+		    	placeholder="Task description" id="text" value="@newTaskForm("text").value">
+		</p>
+		<p>
+		    <button type="submit" id="addTaskButton">Add</button>
+		</p>
+	    
+	}
+
+}
+        
