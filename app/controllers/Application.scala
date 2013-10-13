@@ -1,9 +1,13 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{ Action, Controller }
 
-object Application extends Controller {
-  def index = Action {
-    Ok(views.html.index.render("Hello Play Framework"))
-  }
+object Application extends SecuredController {
+	def index = withUser(user =>
+		Action {
+			Ok(views.html.index.render("Hello Play Framework"))
+		})
+	def notFound(p:String) = Action { implicit request =>
+		NotFound("Not found "+request.path)
+	}
 }

@@ -31,10 +31,12 @@ class TaskDao(userId: Long) {
 	def create(taskTemplate: Task): Task =
 		DB.withConnection { implicit c =>
 			val id = SQL("SELECT nextval('task_id_seq') id FROM dual").as(TaskDao.id.single)
-			SQL("INSERT INTO tasks (id, status, text, user_id) VALUES ({taskId},{status}, {text}, {userId})").on(
+			SQL("INSERT INTO tasks (id, status, priority, text, user_id) "+
+					"VALUES ({taskId},{status}, {priority}, {text}, {userId})").on(
 				'taskId -> id,
 				'text -> text,
 				'status -> 0,
+				'priority -> taskTemplate.priority.level,
 				'userId -> userId).
 				executeUpdate()
 			getById(id)

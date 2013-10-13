@@ -1,0 +1,34 @@
+@(form: Form[Login])(implicit flash:Flash)
+
+@main("Log in - Todo list") {
+	
+	
+        @helper.form(routes.Auth.authenticate) {
+            
+            @form.globalError.map { error =>
+                <p class="error">
+                    @error.message
+                </p>
+            }
+            
+            @flash.get("success").map { message =>
+                <p class="success">
+                    @message
+                </p>
+            }
+            
+            <p>
+                <input type="name" name="name" placeholder="User name" id="username" value="@form("name").value">
+            </p>
+            <p>
+                <input type="password" name="password" id="password" placeholder="Password">
+            </p>
+            <p>
+                <button type="submit" id="loginbutton">Log in</button>
+            </p>
+            <a href="@routes.Auth.signUp">Sign up...</a>
+            
+        }
+        
+}
+        
