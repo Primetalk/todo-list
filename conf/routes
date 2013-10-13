@@ -5,6 +5,7 @@
 GET     /                           controllers.Application.index()
 
 # Map static resources from the /public folder to the /assets URL path
+GET     /assets/javascriptRoutes	controllers.Application.javascriptRoutes
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /webjars/*file              controllers.WebJarAssets.at(file)
 
@@ -16,5 +17,6 @@ GET		/logout						controllers.Auth.logout
 
 GET		/tasks						controllers.Task.list
 POST	/tasks						controllers.Task.add
+DELETE	/tasks/:id					controllers.Task.delete(id:Long)
 
 GET		/*path						controllers.Application.notFound(path)

@@ -6,6 +6,8 @@ import dao.UserDao
 import play.api.data.Form
 import play.api.data.Forms._
 import models.Priority
+import models.User
+import play.api.mvc.RequestHeader
 
 object Task extends SecuredController {
 	val taskForm = Form(
@@ -20,10 +22,13 @@ object Task extends SecuredController {
 			}
 	)
 	
+	private 
+	def tasksOk(user:User)(implicit request:RequestHeader) = 
+		Ok(views.html.tasks(UserDao.tasks(user).all, taskForm, user))
 	
 	def list = withUser(user =>
 		Action{ implicit request =>
-			Ok(views.html.tasks(UserDao.tasks(user).all, taskForm, user))
+			tasksOk(user)
 		})
 		
 		
@@ -41,10 +46,17 @@ object Task extends SecuredController {
 						request.flash.get("redirect").
 							map(Redirect(_)).
 							getOrElse(Redirect(routes.Application.index))
-					Ok(views.html.tasks(UserDao.tasks(user).all, taskForm, user))
+					tasksOk(user)
 				})
 			
 		})
 		
+	def delete(id:Long) = withUser(user ⇒
+		Action { implicit request ⇒
+			println("delete:"+id)
+			UserDao.tasks(user).delete(id)
+			tasksOk(user)
+		}
+	)
 		
 }
