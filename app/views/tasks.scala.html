@@ -2,37 +2,65 @@
 
 @main(""+tasks.size + " task(s) of user "+user.name) {
 	
-	@tasks.map { task => 
-		<p>@task.text</p>
 		
+	<table class="table">
+	<thead>
+	<tr><td>!</td><td>Task</td><td>
+			<button class="btn btn-mini" alt="remove all completed tasks">
+				<span class="glyphicon glyphicon-trash"></span>
+				<span class="glyphicon glyphicon-trash"></span>
+			</button>
+	</td></tr>
+	</thead>
+		<tbody>
+	@tasks.map { task => <tr>
+		<td>@task.priority.level</td>
+		<td>@task.text</td>
+		<td>
+			<button class="btn btn-mini">
+				<span class="glyphicon glyphicon-trash"></span>
+			</button>
+		</td>
+	</tr>		
 		}
-@* The form for adding tasks: *@	
+	</tbody>
+
+	<tfoot>
+@* The form for adding tasks: *@
+	<tr>	
 	@helper.form(routes.Task.add) {
 	    
-		@newTaskForm.globalError.map { error =>
-		    <p class="error">
-		        @error.message
-		    </p>
-		}
-		
-		@flash.get("success").map { message =>
-		    <p class="success">
-		        @message
-		    </p>
-		}
-		
-		<p>
+		<td>&nbsp;
 			<input type="hidden" name="id" id="newTaskId" value="0">
 			<input type="hidden" name="status" id="newTaskStatus" value="0">
 			<input type="hidden" name="priority" id="newTaskPriority" value="0">
+		</td>
+		<td>
 		    <input type="text" name="text" 
 		    	placeholder="Task description" id="text" value="@newTaskForm("text").value">
-		</p>
-		<p>
-		    <button type="submit" id="addTaskButton">Add</button>
-		</p>
-	    
+		</td>
+		<td>
+		    <button type="submit" id="addTaskButton" class="btn btn-mini">
+		    	<span class="glyphicon glyphicon-plus"></span>
+		    </button>
+	    </td>
 	}
+	</tr>
+	
+	@flash.get("success").map { message =>
+	    <tr><td colspan="3" class="success">@message</td>
+	    </tr>
+	}
+	
+	@if(newTaskForm.globalError.size>0){
+		@newTaskForm.globalError.map { error => 
+			<tr><td colspan="3" class="error">@error.message</td>
+			</tr>
+		}
+	}
+		
+	</tfoot>
+	</table>
 
-}
         
+}
