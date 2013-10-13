@@ -20,7 +20,7 @@ object UserDao {
 
 	val id = get[Long]("id")
 
-	val count = get[Long]("count")
+	val countParser = get[Long]("count")
 
 	def all(): List[User] =
 		DB.withConnection { implicit c =>
@@ -34,11 +34,16 @@ object UserDao {
 				as(user.single)
 		}
 
+	def count(): Long =
+		DB.withConnection { implicit c =>
+			SQL("SELECT count(*) count FROM users ").
+				as(countParser.single)			
+		}
 	def isUsernameAvailable(name: String): Boolean =
 		DB.withConnection { implicit c =>
 			val cnt = SQL("SELECT count(*) count FROM users WHERE name = {name}").on(
 				'name -> name).
-				as(count.single)
+				as(countParser.single)
 			cnt == 0
 		}
 
@@ -74,4 +79,7 @@ object UserDao {
 				executeUpdate()
 		}
 	}
+	
+	def tasks(user:User) = 
+		new TaskDao(user.id)
 }
