@@ -52,6 +52,14 @@ class TaskDao(userId: Long) {
 		}
 	}
 
+	def deleteDone() {
+		DB.withConnection { implicit c =>
+			SQL("DELETE FROM tasks WHERE status = 1 AND user_id={userId}").on(
+				'userId -> userId).
+				executeUpdate()
+		}
+	}
+
 	import Task._
 
 	def update(modifiedTask: Task) {

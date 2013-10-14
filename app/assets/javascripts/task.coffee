@@ -1,12 +1,24 @@
 makeTableEditable = ()-> 	
 	r = jsRoutes.controllers.Task.update()
 	jQuery(".jeditable").editable({
-		url  : r.url
-		type : r.method
-		mode : "inline"
-		toggle: "dblclick"
+		url        : r.url
+		type       : r.method
+		mode       : "inline"
+		toggle     : "dblclick"
 		showbuttons: false
-		onblur: "submit"
+		onblur     : "submit"
+	}).prop("title", "Double click to edit...")	
+	jQuery(".jeditable-select").editable({
+		url        : r.url
+		type       : r.method
+		#"data-source"      : "{'0':' ','1':'!','-1':'<'}", #"{'0':'&nbsp;','1':'&#x2762','-1':'&#xe094'}",     	
+		style      : "color:green"
+		mode       : "inline"
+		toggle     : "dblclick"
+		showbuttons: false
+		#style      : "font-family: 'Glyphicons Halflings', Arial"
+		cssclass   : 'prioritySelect'
+		onblur     : "submit"
 	}).prop("title", "Double click to edit...")
 	jQuery("input.task-status").click( (eventData) ->
 		pk = @getAttribute("data-pk")
@@ -19,6 +31,34 @@ makeTableEditable = ()->
 			(data) -> updateTableHtml(data)
 			)			
 	)
+	jQuery(".task-delete").click( (eventData) ->
+		pk = @getAttribute("data-pk")
+		jsRoutes.controllers.Task.delete(pk).ajax({
+			success : (pageWithTable, status, jqXHR) ->
+						updateTableHtml(pageWithTable)
+			error   : (jqXHR, textStatus, errorThrown) ->
+						alert("error:"+errorThrown+"status:"+textStatus)        
+		})
+	)
+	jQuery("#task-delete-done").click( (eventData) ->
+		jsRoutes.controllers.Task.deleteDone().ajax({
+			success : (pageWithTable, status, jqXHR) ->
+						updateTableHtml(pageWithTable)
+			error   : (jqXHR, textStatus, errorThrown) ->
+						alert("error:"+errorThrown+"status:"+textStatus)        
+		})
+	)
+	jQuery("#task-add").click( (eventData) ->		
+		newTaskUrlEncoded = $(".new-task").serializeArray();
+		jsRoutes.controllers.Task.add().ajax({
+			data	: newTaskUrlEncoded			
+			success : (pageWithTable, status, jqXHR) ->
+						updateTableHtml(pageWithTable)
+			error   : (jqXHR, textStatus, errorThrown) ->
+						alert("error:"+errorThrown+"status:"+textStatus)        
+		})
+	)
+	
 
 updateTableHtml = (pageWithTable) ->
 	# location.reload()

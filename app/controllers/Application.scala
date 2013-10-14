@@ -27,7 +27,9 @@ object Application extends SecuredController {
 	  Ok(
 	    Routes.javascriptRouter("jsRoutes")(
 	      Task.delete,
-	      Task.update
+	      Task.deleteDone,
+	      Task.update,
+	      Task.add
 	    )
 	  ).as("text/javascript")
 	}

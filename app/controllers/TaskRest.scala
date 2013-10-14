@@ -10,7 +10,7 @@ import models.User
 import play.api.mvc.RequestHeader
 import models.FieldUpdate
 
-object Task extends SecuredController {
+object TaskRest extends SecuredController {
 	val taskForm = Form(
 		mapping(
 			"id" -> number,
