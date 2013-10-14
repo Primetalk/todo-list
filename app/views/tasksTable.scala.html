@@ -3,7 +3,9 @@
 	<table class="table" id="tasksTable">
 	<span style="display:none" id="tableTitle">@(""+tasks.size + " task(s) of user "+user.name)</span>
 	<thead>
-	<tr><td>!</td><td>Task</td><td>
+	<tr>
+		<td width="20px"></td>
+		<td>!</td><td>Task</td><td>
 			<button class="btn btn-mini" alt="remove all completed tasks">
 				<span class="glyphicon glyphicon-trash"></span>
 				<span class="glyphicon glyphicon-trash"></span>
@@ -12,6 +14,14 @@
 	</thead>
 		<tbody>
 	@tasks.map { task => <tr>
+		<td width="20px">
+			<input
+				class="task-status" 
+				type="checkbox" 
+				@if(task.status == Completed) { checked } 
+				data-pk="@task.id"
+				/>
+		</td>
 		<td>@task.priority.level</td>
 		<td><div class="jeditable"
 						data-pk="@task.id" 
@@ -36,13 +46,15 @@
 	<tr>	
 	@helper.form(routes.Task.add) {
 	    
-		<td>&nbsp;
+	    <td>&nbsp;
 			<input type="hidden" name="id" id="newTaskId" value="0">
 			<input type="hidden" name="status" id="newTaskStatus" value="0">
+	    </td>
+		<td>&nbsp;
 			<input type="hidden" name="priority" id="newTaskPriority" value="0">
 		</td>
 		<td>
-		    <input type="text" name="text" 
+		    <input type="text" name="text" class="form-control new-task"
 		    	placeholder="Task description" id="text" value="@newTaskForm("text").value">
 		</td>
 		<td>

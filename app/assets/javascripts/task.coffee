@@ -8,15 +8,27 @@ makeTableEditable = ()->
 		showbuttons: false
 		onblur: "submit"
 	}).prop("title", "Double click to edit...")
+	jQuery("input.task-status").click( (eventData) ->
+		pk = @getAttribute("data-pk")
+		checked = jQuery(@).prop("checked")
+		status = if checked then 1 else 0
+		r = jsRoutes.controllers.Task.update()
+		jQuery.post(
+			r.url,
+			"pk="+pk+"&name=status&value="+status,
+			(data) -> updateTableHtml(data)
+			)			
+	)
 
 updateTableHtml = (pageWithTable) ->
 	# location.reload()
 	page = jQuery(jQuery.parseHTML(pageWithTable))
 	title = page.find("#tableTitle").html()
-	document.title = title+"*"
+	document.title = title #+"*"
 	table = page.find("#tasksTable").html()				
 	jQuery("#tasksTable").html(table)
-	makeTableEditable			
+	makeTableEditable()
+
 	
 window.deleteTask = (id) ->
 	r = jsRoutes.controllers.Task.delete(id)

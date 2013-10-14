@@ -21,7 +21,9 @@ class TaskDao(userId: Long) {
 
 	def all(): List[Task] =
 		DB.withConnection { implicit c =>
-			SQL("SELECT * FROM tasks WHERE user_id = {userId} ORDER BY id DESC").on(
+			SQL("SELECT * FROM tasks "+
+					"WHERE user_id = {userId} "+
+					"ORDER BY status ASC, priority DESC, id DESC").on(
 				'userId -> userId).as(TaskDao.task *)
 		}
 
@@ -65,9 +67,13 @@ class TaskDao(userId: Long) {
 		}
 	}
 	
+	
+	private
+	val fields = "text priority status".split(' ').toSet
+	
 	def updateField(f:FieldUpdate) {
 		DB.withConnection { implicit c ⇒
-			// todo check values!
+			require(fields.contains(f.name))
 			SQL(s"UPDATE tasks SET ${f.name}={value} WHERE id = {id} AND user_id={userId}").on(
 				'id -> f.pk,
 //				'name -> f.name,
