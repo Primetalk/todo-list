@@ -1,5 +1,7 @@
 package models
 
+import play.api.libs.json.Json
+
 sealed trait TaskStatus {
 	def toggle:TaskStatus 
 }
@@ -31,4 +33,11 @@ object Priority {
 	private val prioritiesLabels = Map(-1 -> "Low", 0 -> "Normal", 1 -> "High")
 }
 
-case class Task (id:Long, status:TaskStatus, priority:Priority, text:String)
+case class Task (id:Long, status:TaskStatus, priority:Priority, text:String){
+    def toJson = Json.obj(
+				"id" -> id,
+				"text" -> text,
+				"status" -> (status:Int),
+				"priority" -> priority.level
+			)
+}

@@ -22,6 +22,17 @@ DELETE	/tasks-done					controllers.Task.deleteDone
 POST	/tasks/update				controllers.Task.update
 
 
-GET		/*path						controllers.Application.notFound(path)
+# REST API
+POST	/rest/tasks						controllers.TaskRest.list
+POST	/rest/tasks/add					controllers.TaskRest.add
+DELETE	/rest/tasks/:id					controllers.TaskRest.delete(id:Long)
+DELETE	/rest/tasks-done				controllers.TaskRest.deleteDone
+POST	/rest/tasks/update				controllers.TaskRest.update
 
+
+# -----------------------
+# Last route
+# -----------------------
+
+GET		/*path						controllers.Application.notFound(path)
 

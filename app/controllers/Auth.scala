@@ -51,18 +51,9 @@ object Auth extends SecuredController {
 			"name" -> nonEmptyText,
 			"password" -> text,
 			"passwordConfirmation" -> text)(Signup.apply)(Signup.unapply)
-			verifying ("Password can not be empty", result => result match {
-				case Signup(_, p1, _) =>
-					p1 != ""
-			})
-			verifying ("Passwords do not match", result => result match {
-				case signup =>
-					signup.isPasswordMatch
-			})
-			verifying ("User name has already been used", result => result match {
-				case Signup(name, _, _) =>
-						UserDao.isUsernameAvailable(name)
-			})
+			verifying ("Password can not be empty", _.password != "")
+			verifying ("Passwords do not match", _.isPasswordMatch)
+			verifying ("User name has already been used", s=>UserDao.isUsernameAvailable(s.name))
 		)
 	def signUp = Action { implicit request =>
 		Ok(views.html.signup(signupForm))

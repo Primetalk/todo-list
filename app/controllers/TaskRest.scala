@@ -9,61 +9,73 @@ import models.Priority
 import models.User
 import play.api.mvc.RequestHeader
 import models.FieldUpdate
+import models.Login
+import play.api.mvc.Request
+import play.api.mvc.Result
+import play.api.libs.json.Json
+import play.api.libs.json.JsValue
+import play.api.mvc.EssentialAction
 
 object TaskRest extends SecuredController {
-	val taskForm = Form(
+	val simpleAuthForm = Form(
 		mapping(
-			"id" -> number,
-			"status" -> number,
-			"priority" -> number,
-			"text" -> nonEmptyText
-		)((id: Int, status: Int, priority:Int, text: String) ⇒ models.Task(id, status, Priority(priority), text)) {
-				case task: models.Task ⇒ Some((task.id.toInt, task.status: Int, task.priority.level, task.text))
-				case _ ⇒ None
+				"name" -> nonEmptyText(minLength=1),
+				"password" -> nonEmptyText				
+				)(Login.apply)(Login.unapply)
+			verifying ("Password can not be empty", _.password != "")
+			verifying ("Invalid user name or password", UserDao.authenticate(_).isEmpty)
+	)
+		
+//	private
+//	def authenticateFromRequest(implicit request:Request[_]):Option[User] = 
+//		simpleAuthForm.bindFromRequest.fold(f=> None, login => UserDao.authenticate(login))
+	private
+	def authenticateFromRequest2(f:User => Result)(implicit request:Request[_]): Result = 
+		simpleAuthForm.bindFromRequest.fold(f=> None, login => UserDao.authenticate(login)).
+			map(f).getOrElse(BadRequest)
+	
+	private
+	def jsonOk(json:JsValue):Result = 
+		Ok(Json.stringify(json)).as("application/json")
+		
+	def list = 
+		Action{ implicit request =>
+			authenticateFromRequest2{user =>
+				val tasks = UserDao.tasks(user).all.map(_.toJson)
+				jsonOk(Json.toJson(tasks ))
 			}
-	)
-	
-	private 
-	def tasksOk(user:User)(implicit request:RequestHeader) = 
-		Ok(views.html.tasks(UserDao.tasks(user).all, taskForm, user))
-	
-	def list = withUser(user =>
-		Action{ implicit request =>
-			tasksOk(user)
-		})
-		
-		
-	def add = withUser(user =>
-		Action{ implicit request =>
-			taskForm.bindFromRequest.fold(
-				formWithErrors => {
-					println(formWithErrors)
-					BadRequest(views.html.tasks(UserDao.tasks(user).all, formWithErrors, user))}
-				,
-				task => {
-					println(task)
-					UserDao.tasks(user).create(task)
-					request.flash.get("redirect").
-						map(Redirect(_)).
-						getOrElse(Redirect(routes.Application.index))
-					tasksOk(user)
-				})
-			
-		})
-		
-	def delete(id:Long) = withUser(user ⇒
-		Action { implicit request ⇒
-			UserDao.tasks(user).delete(id)
-			tasksOk(user)
 		}
-	)
-	def deleteDone = withUser(user ⇒
-		Action { implicit request ⇒
-			println("deleteDone"+request.body)
-			UserDao.tasks(user).deleteDone()
-			tasksOk(user)
+		
+		
+		
+	def add = 
+		Action{ implicit request =>
+			authenticateFromRequest2{user =>
+				controllers.Task.taskForm.bindFromRequest.fold(
+					formWithErrors => {
+						BadRequest(views.html.tasks(UserDao.tasks(user).all, formWithErrors, user))}
+					,
+					task => {
+						UserDao.tasks(user).create(task)
+						Ok
+					})
+			}
 		}
-	)
+		
+	def delete(id:Long) =
+		Action { implicit request ⇒
+			authenticateFromRequest2{user =>
+				UserDao.tasks(user).delete(id)
+				Ok
+			}
+		}
+	def deleteDone = 
+		Action { implicit request ⇒
+			authenticateFromRequest2{user =>
+				UserDao.tasks(user).deleteDone()
+				Ok
+			}
+		}
 	
 	
 	// TODO validation
@@ -75,15 +87,16 @@ object TaskRest extends SecuredController {
 			)(FieldUpdate.apply)(FieldUpdate.unapply)
 			)
 	
-	def update = withUser(user =>
+	def update = 
 		Action { implicit request ⇒
-			val form = fieldUpdate.bindFromRequest
-			form.fold(
-					formWithErrors => BadRequest("Invalid field value"), 
-					fu =>
-						UserDao.tasks(user).updateField(fu))			
-			tasksOk(user)
+			authenticateFromRequest2{user =>
+				val form = fieldUpdate.bindFromRequest
+				form.fold(
+						formWithErrors => BadRequest("Invalid field value"), 
+						fu =>
+							UserDao.tasks(user).updateField(fu))			
+				Ok
+			}
 		}
-	)
 		
 }
