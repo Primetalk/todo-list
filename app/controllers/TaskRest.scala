@@ -19,11 +19,11 @@ import play.api.mvc.EssentialAction
 object TaskRest extends SecuredController {
 	val simpleAuthForm = Form(
 		mapping(
-				"name" -> nonEmptyText(minLength=1),
+				"name" -> nonEmptyText,
 				"password" -> nonEmptyText				
 				)(Login.apply)(Login.unapply)
 			verifying ("Password can not be empty", _.password != "")
-			verifying ("Invalid user name or password", UserDao.authenticate(_).isEmpty)
+			verifying ("Invalid user name or password", UserDao.authenticate(_).isDefined)
 	)
 		
 //	private
@@ -31,8 +31,10 @@ object TaskRest extends SecuredController {
 //		simpleAuthForm.bindFromRequest.fold(f=> None, login => UserDao.authenticate(login))
 	private
 	def authenticateFromRequest2(f:User => Result)(implicit request:Request[_]): Result = 
-		simpleAuthForm.bindFromRequest.fold(f=> None, login => UserDao.authenticate(login)).
-			map(f).getOrElse(BadRequest)
+		simpleAuthForm.bindFromRequest.
+			fold(formWithErrors=> BadRequest(formWithErrors.errors.map(_.message).mkString(",")), 
+					login => UserDao.authenticate(login).map(f).getOrElse(BadRequest("Not authenticated")))
+			
 	
 	private
 	def jsonOk(json:JsValue):Result = 
@@ -40,6 +42,7 @@ object TaskRest extends SecuredController {
 		
 	def list = 
 		Action{ implicit request =>
+			println("form:"+simpleAuthForm.bindFromRequest)
 			authenticateFromRequest2{user =>
 				val tasks = UserDao.tasks(user).all.map(_.toJson)
 				jsonOk(Json.toJson(tasks ))
