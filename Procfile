@@ -1,1 +1,1 @@
-web: activator -Dhttp.port=${PORT} ${JAVA_OPTS}
+web: ./activator -Dhttp.port=${PORT} ${JAVA_OPTS}
