@@ -36,16 +36,15 @@ makeTableEditable = ()->
 		jsRoutes.controllers.Task.delete(pk).ajax({
 			success : (pageWithTable, status, jqXHR) ->
 						updateTableHtml(pageWithTable)
-			error   : (jqXHR, textStatus, errorThrown) ->
-						alert("error:"+errorThrown+"status:"+textStatus)        
+			error   : (jqXHR, textStatus, errorThrown) -> alert(jqXHR.responseText)						
+						#TODO put in the last table row        
 		})
 	)
 	jQuery("#task-delete-done").click( (eventData) ->
 		jsRoutes.controllers.Task.deleteDone().ajax({
 			success : (pageWithTable, status, jqXHR) ->
 						updateTableHtml(pageWithTable)
-			error   : (jqXHR, textStatus, errorThrown) ->
-						alert("error:"+errorThrown+"status:"+textStatus)        
+			error   : (jqXHR, textStatus, errorThrown) -> alert(jqXHR.responseText)        
 		})
 	)
 	jQuery("#task-add").click( (eventData) ->		
@@ -54,8 +53,7 @@ makeTableEditable = ()->
 			data	: newTaskUrlEncoded			
 			success : (pageWithTable, status, jqXHR) ->
 						updateTableHtml(pageWithTable)
-			error   : (jqXHR, textStatus, errorThrown) ->
-						alert("error:"+errorThrown+"status:"+textStatus)        
+			error   :(jqXHR, textStatus, errorThrown) -> alert(jqXHR.responseText) 
 		})
 	)
 	

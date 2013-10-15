@@ -9,6 +9,7 @@ import models.Priority
 import models.User
 import play.api.mvc.RequestHeader
 import models.FieldUpdate
+import play.api.i18n.Messages
 
 object Task extends SecuredController {
 	val taskForm = Form(
@@ -37,9 +38,10 @@ object Task extends SecuredController {
 		Action{ implicit request =>
 			taskForm.bindFromRequest.fold(
 				formWithErrors => {
-					println(formWithErrors)
-					BadRequest(views.html.tasks(UserDao.tasks(user).all, formWithErrors, user))}
-				,
+					val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*)).mkString("\n")
+//					println(errors)					
+					BadRequest(errors)
+				},
 				task => {
 					println(task)
 					UserDao.tasks(user).create(task)
@@ -65,13 +67,11 @@ object Task extends SecuredController {
 		}
 	)
 	
-	
-	// TODO validation
 	val fieldUpdate = Form(
 			mapping(
 				"pk" -> number,
 				"name" -> text,
-				"value" -> text
+				"value" -> nonEmptyText
 			)(FieldUpdate.apply)(FieldUpdate.unapply)
 			)
 	

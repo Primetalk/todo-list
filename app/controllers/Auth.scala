@@ -6,6 +6,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.Action
 import models.Signup
+import play.api.i18n.Messages
 
 /**
  * Authentication controller. Manages:
@@ -28,8 +29,13 @@ object Auth extends SecuredController {
 	def authenticate =
 		Action { implicit request =>
 			loginForm.bindFromRequest.fold(
-				formWithErrors =>
-					BadRequest(views.html.login(formWithErrors)).flashing(request.flash),
+				formWithErrors =>{
+//					val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*)).mkString("\n")
+//					println(formWithErrors)
+//					println(formWithErrors.globalError)
+//					formWithErrors.errors.map(e=>e.)
+					BadRequest(views.html.login(formWithErrors))//.flashing("error"-> errors)
+				},
 				login => {
 					val redirect =
 						request.flash.get("redirect").
@@ -60,8 +66,10 @@ object Auth extends SecuredController {
 	}
 	def signUpPost = Action { implicit request =>
 		signupForm.bindFromRequest.fold(
-			formWithErrors => 
-				BadRequest(views.html.signup(formWithErrors)),
+			formWithErrors =>{
+//				val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*)).mkString("\n")
+				BadRequest(views.html.signup(formWithErrors))//.flashing("error"-> errors)
+			},
 			signup => {
 				val user = UserDao.create(signup.toLogin)
 				val redirect =

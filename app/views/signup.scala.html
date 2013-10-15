@@ -20,12 +20,27 @@
             <p>
                 <input type="name" name="name" class="form-control" placeholder="User name" id="username" value="@form("name").value">
             </p>
+       		@form.errors.filter(_.key=="name").map{ err => 
+       			<p class="error">
+       				@Messages(err.message, err.args: _*).toString
+       			</p> 
+       		}
             <p>
                 <input type="password" name="password" class="form-control" id="password" placeholder="Password">
             </p>
+       		@form.errors.filter(_.key=="password").map{ err => 
+       			<p class="error">
+       				@Messages(err.message, err.args: _*).toString
+       			</p> 
+       		}
             <p>
                 <input type="password" name="passwordConfirmation" class="form-control" id="passwordConfirmation" placeholder="Password confirmation">
             </p>
+       		@form.errors.filter(_.key=="passwordConfirmation").map{ err => 
+       			<p class="error">
+       				@Messages(err.message, err.args: _*).toString
+       			</p> 
+       		}
             <p>
                 <button type="submit" class="form-control" id="loginbutton">Register</button>
             </p>

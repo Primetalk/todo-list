@@ -58,8 +58,8 @@ object TaskRest extends SecuredController {
 				controllers.Task.taskForm.bindFromRequest.fold(
 						
 					formWithErrors ⇒ {
-						val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*))
-						BadRequest(errors.mkString("\n"))					
+						val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*)).mkString("\n")
+						BadRequest(errors)					
 					},
 					task => {
 						UserDao.tasks(user).create(task)
