@@ -1,18 +1,17 @@
 @(tasks: List[Task], newTaskForm:Form[Task], user:User)(implicit flash:Flash)
 
-	<table class="table" id="tasksTable">
+	<table class="table table-striped" id="tasksTable">
 	<span style="display:none" id="tableTitle">@(""+tasks.size + " task(s) of user "+user.name)</span>
 	<thead>
 	<tr>
-		<td width="15px"></td>
-		<td width="70px">&#x2762</td>
-		<td>Task</td>
-		<td width="15px">
-			<button id="task-delete-done" class="btn btn-mini task-delete-done" alt="remove all completed tasks">
-				<span class="glyphicon glyphicon-trash"></span>
-				<span class="glyphicon glyphicon-trash"></span>
+		<th width="15px"></th>
+		<th width="60px">&#x2762</th>
+		<th>Task</th>
+		<th width="15px">
+			<button id="task-delete-done" class="btn btn-mini task-delete-done" title="Remove all completed tasks" >
+				<span class="glyphicon glyphicon-check"></span>
 			</button>
-	</td></tr>
+	</th></tr>
 	</thead>
 		<tbody>
 	@tasks.map { task => <tr data-pk="@task.id">
@@ -76,7 +75,7 @@
 					}
 				</select>
 			*@				
-				<select class="form-control new-task task-priority-input" 
+				<select class="form-control new-task task-priority-input"
 						name="priority" 
 						id="newTaskPriority" 
 						>

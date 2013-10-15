@@ -15,6 +15,7 @@ import play.api.mvc.Result
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
 import play.api.mvc.EssentialAction
+import play.api.i18n.Messages
 
 object TaskRest extends SecuredController {
 	val simpleAuthForm = Form(
@@ -55,9 +56,11 @@ object TaskRest extends SecuredController {
 		Action{ implicit request =>
 			authenticateFromRequest2{user =>
 				controllers.Task.taskForm.bindFromRequest.fold(
-					formWithErrors => {
-						BadRequest(views.html.tasks(UserDao.tasks(user).all, formWithErrors, user))}
-					,
+						
+					formWithErrors ⇒ {
+						val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*))
+						BadRequest(errors.mkString("\n"))					
+					},
 					task => {
 						UserDao.tasks(user).create(task)
 						Ok

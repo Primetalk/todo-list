@@ -27,11 +27,11 @@ object UserDao {
 			SQL("SELECT * FROM users").as(user *)
 		}
 
-	def getById(id: Long): User =
+	def getById(id: Long): Option[User] =
 		DB.withConnection { implicit c =>
 			SQL("SELECT * FROM users WHERE id = {id}").on(
 				'id -> id).
-				as(user.single)
+				as(user.singleOpt)
 		}
 
 	def count(): Long =
@@ -57,7 +57,7 @@ object UserDao {
 				'name -> login.name,
 				'passwordDigest -> login.passwordDigest).
 				executeUpdate()
-			getById(id)
+			getById(id).get
 		}
 
 	def authenticate(login: Login): Option[User] =

@@ -1,4 +1,5 @@
 import play.Project._
+import cloudbees.Plugin._
 
 name := """project-arseniy-zhizhelev"""
 
@@ -14,3 +15,8 @@ libraryDependencies ++= Seq(
 ) 
 
 playScalaSettings
+
+//val main = play.Project(appName, appVersion, appDependencies).settings(cloudBeesSettings :_*).settings(CloudBees.applicationId := Some("your account name/your app name"))
+    
+CloudBees.deployParams := Map("runtime.java_version" -> "1.7")
+

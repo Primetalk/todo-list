@@ -17,4 +17,5 @@ dist
 /.settings
 activator-sbt-*-shim.sbt
 .cache
+cloud.sh
 

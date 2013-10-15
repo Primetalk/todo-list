@@ -10,7 +10,6 @@ import models._
 import views._
 
 object Application extends SecuredController {
-	
 	def index = withUser(user =>
 		Action {
 //			Ok(views.html.index.render("Hello Play Framework"))

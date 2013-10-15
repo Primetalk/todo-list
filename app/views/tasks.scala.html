@@ -1,4 +1,4 @@
-@(tasks: List[Task], newTaskForm:Form[Task], user:User)(implicit flash:Flash)
+@(tasks: List[Task], newTaskForm:Form[Task], user:User)(implicit flash:Flash, request:RequestHeader)
 
 @main(""+tasks.size + " task(s) of user "+user.name) {
 	@tasksTable(tasks, newTaskForm, user) 
