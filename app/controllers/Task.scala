@@ -17,7 +17,7 @@ object Task extends SecuredController {
 			"id" -> number,
 			"status" -> number,
 			"priority" -> number,
-			"text" -> nonEmptyText
+			"text" -> nonEmptyText(1,250)
 		)((id: Int, status: Int, priority:Int, text: String) ⇒ models.Task(id, status, Priority(priority), text)) {
 				case task: models.Task ⇒ Some((task.id.toInt, task.status: Int, task.priority.level, task.text))
 				case _ ⇒ None
@@ -38,9 +38,9 @@ object Task extends SecuredController {
 		Action{ implicit request =>
 			taskForm.bindFromRequest.fold(
 				formWithErrors => {
-					val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*)).mkString("\n")
+//					val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*)).mkString("\n")
 //					println(errors)					
-					BadRequest(errors)
+					BadRequest(views.html.tasks(UserDao.tasks(user).all, formWithErrors, user))
 				},
 				task => {
 					println(task)

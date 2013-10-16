@@ -53,7 +53,8 @@ makeTableEditable = ()->
 			data	: newTaskUrlEncoded			
 			success : (pageWithTable, status, jqXHR) ->
 						updateTableHtml(pageWithTable)
-			error   :(jqXHR, textStatus, errorThrown) -> alert(jqXHR.responseText) 
+			error   :(jqXHR, textStatus, errorThrown) -> 
+					updateTableHtml(jqXHR.responseText) #alert(jqXHR.responseText) 
 		})
 	)
 	

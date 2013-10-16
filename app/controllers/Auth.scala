@@ -19,8 +19,11 @@ object Auth extends SecuredController {
 	
 	val loginForm = Form(
 		mapping(
-			"name" -> nonEmptyText,
-			"password" -> nonEmptyText)(Login.apply)(Login.unapply))
+			"name" -> nonEmptyText(1, 250),
+			"password" -> nonEmptyText
+			)(Login.apply)(Login.unapply)
+			verifying("Invalid user name or password", login => UserDao.authenticate(login).isDefined)
+		)
 			
 	def login = Action { implicit request =>
 		Ok(views.html.login(loginForm)).flashing("success"->"Default user - 'user', with password - '123'")
@@ -54,9 +57,10 @@ object Auth extends SecuredController {
 	
 	val signupForm = Form(
 		mapping(
-			"name" -> nonEmptyText,
+			"name" -> nonEmptyText(1, 250),
 			"password" -> text,
-			"passwordConfirmation" -> text)(Signup.apply)(Signup.unapply)
+			"passwordConfirmation" -> text
+			)(Signup.apply)(Signup.unapply)
 			verifying ("Password can not be empty", _.password != "")
 			verifying ("Passwords do not match", _.isPasswordMatch)
 			verifying ("User name has already been used", s=>UserDao.isUsernameAvailable(s.name))

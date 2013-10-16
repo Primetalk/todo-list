@@ -91,8 +91,10 @@
 				</select>
 		</td>
 		<td>
-		    <input type="text" name="text" class="form-control new-task"
-		    	placeholder="Task description" id="text" value="@newTaskForm("text").value">
+			<div class="control-group form-group @if(!newTaskForm.errors.filter(_.key=="text").isEmpty) { has-error }" style="margin-bottom: 0px;">
+			    <input type="text" name="text" class="form-control new-task"
+			    	placeholder="Task description" id="text" value="@newTaskForm("text").value">
+	       	</div>
 		</td>
 		<td>
 		    <button id="task-add" class="btn btn-mini task-add">
@@ -111,6 +113,23 @@
 			<tr><td colspan="3" class="error">@error.message</td>
 			</tr>
 		}
+	}
+		
+	@if(newTaskForm.errors.size>0){
+		<tr>
+		
+			<td></td>
+			<td></td>
+			<td><div class="has-error" style="margin-bottom: 0px;">
+				    @newTaskForm.errors.filter(_.key=="text").map{ err => 
+		       			<p class="editable-error-block help-block">
+		       				@Messages(err.message, err.args: _*).toString
+		       			</p> 
+		       		}
+		       		</div>
+			</td>
+			<td></td>
+		</tr>
 	}
 		
 	</tfoot>

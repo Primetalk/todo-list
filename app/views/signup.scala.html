@@ -6,9 +6,11 @@
         @helper.form(routes.Auth.signUpPost) {
             
             @form.globalError.map { error =>
-                <p class="error">
+            	<div class="control-group form-group has-error" style="margin-bottom: 0px;">
+                <p class="editable-error-block help-block">
                     @error.message
                 </p>
+                </div>
             }
             
             @flash.get("success").map { message =>
@@ -17,30 +19,36 @@
                 </p>
             }
             
-            <p>
-                <input type="name" name="name" class="form-control" placeholder="User name" id="username" value="@form("name").value">
-            </p>
+			<div class="control-group form-group @if(!form.errors.filter(_.key=="name").isEmpty) { has-error }" style="margin-bottom: 0px;">
+                <input type="name" name="name"
+                 class="form-control  @if(!form.errors.filter(_.key=="name").isEmpty) { has-error }"
+                 placeholder="User name" id="username" value="@form("name").value">
        		@form.errors.filter(_.key=="name").map{ err => 
-       			<p class="error">
+       			<p class="editable-error-block help-block">
        				@Messages(err.message, err.args: _*).toString
        			</p> 
        		}
-            <p>
-                <input type="password" name="password" class="form-control" id="password" placeholder="Password">
-            </p>
+           </div>
+            <div class="control-group form-group @if(!form.errors.filter(_.key=="password").isEmpty) { has-error }" style="margin-bottom: 0px;">
+                <input type="password" name="password" 
+                	class="form-control  @if(!form.errors.filter(_.key=="password").isEmpty) { has-error }" 
+                	id="password" placeholder="Password">
        		@form.errors.filter(_.key=="password").map{ err => 
-       			<p class="error">
+       			<p class="editable-error-block help-block">
        				@Messages(err.message, err.args: _*).toString
        			</p> 
        		}
-            <p>
-                <input type="password" name="passwordConfirmation" class="form-control" id="passwordConfirmation" placeholder="Password confirmation">
-            </p>
+            </div>
+            <div class="control-group form-group @if(!form.errors.filter(_.key=="passwordConfirmation").isEmpty) { has-error }" style="margin-bottom: 0px;">
+                <input type="password" name="passwordConfirmation" 
+                	class="form-control  @if(!form.errors.filter(_.key=="passwordConfirmation").isEmpty) { has-error }" 
+                	id="passwordConfirmation" placeholder="Password confirmation">
        		@form.errors.filter(_.key=="passwordConfirmation").map{ err => 
-       			<p class="error">
+       			<p class="editable-error-block help-block">
        				@Messages(err.message, err.args: _*).toString
        			</p> 
        		}
+            </div>
             <p>
                 <button type="submit" class="form-control" id="loginbutton">Register</button>
             </p>
