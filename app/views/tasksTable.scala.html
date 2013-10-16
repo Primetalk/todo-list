@@ -1,6 +1,6 @@
 @(tasks: List[Task], newTaskForm:Form[Task], user:User)(implicit flash:Flash)
 
-	<table class="table table-striped" id="tasksTable">
+	<table class="table" id="tasksTable">
 	<span style="display:none" id="tableTitle">@(""+tasks.size + " task(s) of user "+user.name)</span>
 	<thead>
 	<tr>
@@ -37,13 +37,17 @@
 				case -1 => {<span class="text-info">&#xe094</span>}
 			}</div>
 		</td>
-		<td><div class="jeditable"
+		<td><div class="jeditable @if(task.status == Completed) {task-completed}"
 						data-pk="@task.id" 
 						data-type="text" 
 						data-name="text"
 						data-inputclass="form-control task-text-input"
+						
 						>
-							@if(task.status == Completed) { <strike>@task.text</strike } else {@task.text} 
+							@if(task.status == Completed) { <strike>@task.text</strike } else {
+								@task.text
+								
+							} 
 					</div>
 			</td>
 		<td>

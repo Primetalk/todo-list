@@ -17,7 +17,7 @@
         <div class="navbar-header">            
                 <a id="titleLink" class="navbar-brand" href="/">@title</a>
         </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <div class="collapse navbar-collapse navbar-ex1-collapse">  @* collapse navbar-collapse navbar-ex1-collapse *@
 				@if(controllers.Application.isAuthenticated){
             	    <p class="navbar-text pull-right navbar-right"><a href="@routes.Auth.logout" class="navbar-link">Logout</a></p>                
 				}            

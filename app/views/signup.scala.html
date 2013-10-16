@@ -6,7 +6,7 @@
         @helper.form(routes.Auth.signUpPost) {
             
             @form.globalError.map { error =>
-            	<div class="control-group form-group has-error" style="margin-bottom: 0px;">
+            	<div class="control-group form-group has-error">
                 <p class="editable-error-block help-block">
                     @error.message
                 </p>
@@ -19,7 +19,7 @@
                 </p>
             }
             
-			<div class="control-group form-group @if(!form.errors.filter(_.key=="name").isEmpty) { has-error }" style="margin-bottom: 0px;">
+			<div class="control-group form-group @if(!form.errors.filter(_.key=="name").isEmpty) { has-error }">
                 <input type="name" name="name"
                  class="form-control  @if(!form.errors.filter(_.key=="name").isEmpty) { has-error }"
                  placeholder="User name" id="username" value="@form("name").value">
@@ -29,7 +29,7 @@
        			</p> 
        		}
            </div>
-            <div class="control-group form-group @if(!form.errors.filter(_.key=="password").isEmpty) { has-error }" style="margin-bottom: 0px;">
+            <div class="control-group form-group @if(!form.errors.filter(_.key=="password").isEmpty) { has-error }">
                 <input type="password" name="password" 
                 	class="form-control  @if(!form.errors.filter(_.key=="password").isEmpty) { has-error }" 
                 	id="password" placeholder="Password">
@@ -39,7 +39,7 @@
        			</p> 
        		}
             </div>
-            <div class="control-group form-group @if(!form.errors.filter(_.key=="passwordConfirmation").isEmpty) { has-error }" style="margin-bottom: 0px;">
+            <div class="control-group form-group @if(!form.errors.filter(_.key=="passwordConfirmation").isEmpty) { has-error }">
                 <input type="password" name="passwordConfirmation" 
                 	class="form-control  @if(!form.errors.filter(_.key=="passwordConfirmation").isEmpty) { has-error }" 
                 	id="passwordConfirmation" placeholder="Password confirmation">

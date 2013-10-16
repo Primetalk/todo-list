@@ -99,9 +99,12 @@ object TaskRest extends SecuredController {
 				val form = fieldUpdate.bindFromRequest
 				form.fold(
 						formWithErrors => BadRequest("Invalid field value"), 
-						fu =>
-							UserDao.tasks(user).updateField(fu))			
-				Ok
+						fu =>{
+							UserDao.tasks(user).updateField(fu)
+							Ok
+						}
+				)			
+				
 			}
 		}
 		
