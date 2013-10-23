@@ -31,10 +31,20 @@ object TaskRest extends SecuredController {
 //	def authenticateFromRequest(implicit request:Request[_]):Option[User] = 
 //		simpleAuthForm.bindFromRequest.fold(f=> None, login => UserDao.authenticate(login))
 	private
-	def authenticateFromRequest2(f:User => Result)(implicit request:Request[_]): Result = 
-		simpleAuthForm.bindFromRequest.
-			fold(formWithErrors=> BadRequest(formWithErrors.errors.map(_.message).mkString(",")), 
+	def authenticateFromRequest2(f:User => Result)(implicit request:Request[_]): Result = {
+		println(request.body)
+		val boundForm = simpleAuthForm.bindFromRequest
+		println("boundForm:"+boundForm)
+		boundForm.
+			fold(formWithErrors=> 
+					{
+						val errors = formWithErrors.errors.map(_.message).mkString(",")
+						println("authentication errors: "+errors)
+						BadRequest(errors)							
+					}
+							, 
 					login => UserDao.authenticate(login).map(f).getOrElse(BadRequest("Not authenticated")))
+	}
 			
 	
 	private
@@ -55,10 +65,12 @@ object TaskRest extends SecuredController {
 	def add = 
 		Action{ implicit request =>
 			authenticateFromRequest2{user =>
+				println(".")
 				controllers.Task.taskForm.bindFromRequest.fold(
 						
 					formWithErrors ⇒ {
 						val errors = formWithErrors.errors.map(err => Messages(err.message, err.args: _*)).mkString("\n")
+						println("formWithErrors"+errors)
 						BadRequest(errors)					
 					},
 					task => {

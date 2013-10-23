@@ -73,16 +73,25 @@ object Task extends SecuredController {
 				"name" -> text,
 				"value" -> nonEmptyText
 			)(FieldUpdate.apply)(FieldUpdate.unapply)
+			
 			)
 	
 	def update = withUser(user =>
 		Action { implicit request ⇒
 			val form = fieldUpdate.bindFromRequest
 			form.fold(
-					formWithErrors => BadRequest("Invalid field value"), 
+					formWithErrors => 
+						BadRequest("Invalid field value"), 
 					fu =>
-						UserDao.tasks(user).updateField(fu))			
-			tasksOk(user)
+						try{
+							UserDao.tasks(user).updateField(fu)
+							tasksOk(user)
+						}catch{
+							case e:Exception =>
+								println("error: "+e)
+								BadRequest("The task has been deleted.")							
+						}
+				)
 		}
 	)
 		

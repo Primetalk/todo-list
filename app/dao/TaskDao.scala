@@ -65,6 +65,7 @@ class TaskDao(userId: Long) {
 	def update(modifiedTask: Task) {
 		DB.withConnection { implicit c ⇒
 			val status: Int = modifiedTask.status
+			getById(modifiedTask.id)
 			SQL("UPDATE tasks SET status={status}, text={text}, priority={priority} WHERE id = {id} AND user_id={userId}").on(
 				'id -> modifiedTask.id,
 				'text -> modifiedTask.text,
@@ -82,6 +83,7 @@ class TaskDao(userId: Long) {
 	def updateField(f:FieldUpdate) {
 		DB.withConnection { implicit c ⇒
 			require(fields.contains(f.name))
+			getById(f.pk)
 			SQL(s"UPDATE tasks SET ${f.name}={value} WHERE id = {id} AND user_id={userId}").on(
 				'id -> f.pk,
 //				'name -> f.name,

@@ -42,6 +42,8 @@ class RestSpec extends Specification {
 					.withFormUrlEncodedBody((
 							("priority" -> "1") 
 							:: ("text" -> "Created from REST")
+							:: ("id" -> "0")
+							:: ("status" -> "0")
 							:: credentials):_*))
 					.get
 			status(addTask) must equalTo(OK)
