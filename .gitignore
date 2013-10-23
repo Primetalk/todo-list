@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 logs
 project/project
 project/target
@@ -20,3 +21,18 @@ activator-sbt-*-shim.sbt
 cloud.sh
 restart.sh
 
+=======
+*.class
+*.log
+
+# sbt specific
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+>>>>>>> ce3caa1012e604929bf998540ad2c41a5c892e2c
